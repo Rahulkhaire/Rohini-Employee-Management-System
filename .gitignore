@@ -1,9 +1,25 @@
-node_modules/
-dist/
+
+# Python
+venv/
 __pycache__/
 *.pyc
-venv/
-.venv/
+.pytest_cache/
+
+# Environment variables
 .env
-instance/
+.env.*
+!.env.example
+
+# Database and private data
 *.db
+instance/
+uploads/
+deployment-backup/
+
+# Node
+node_modules/
+dist/
+
+# OS and editor
+.DS_Store
+.vscode/
