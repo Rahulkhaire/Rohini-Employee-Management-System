@@ -1,107 +1,203 @@
-<<<<<<< HEAD
-# Rohini-Employee-Management-System
-=======
-# Rohini Team Manager
+# Rohini Employee Management System
 
-Employee / task management system for **Rohini People Technology Pvt. Ltd.**
-React (Vite) frontend + Flask (SQLite) backend. Built for a small team (5-6 people) and easy to grow.
+A web-based Employee Management System designed to simplify employee administration, task management, attendance tracking, and team coordination for Rohini.
 
-## What it does
+## Overview
 
-- **Login with credentials**: the admin adds each employee (email + password); employees sign in with those.
-- **Assign tasks**: any employee can assign a task to any teammate, with deadline and priority.
-- **Overdue emails**: if a task is not marked Done by its deadline, the assignee is emailed automatically
-  (and the person who assigned it is cc'd). It repeats every 24 h until the task is done (configurable).
-- **New-task email**: assignee is emailed when a task is assigned to them.
-- **Monitoring dashboard**: open / in-progress / overdue / completed counts, on-time rate,
-  overdue list, tasks due in 48 h, and per-employee workload.
-- **Team page (admin)**: add, edit, disable employees, reset passwords, make someone admin.
-- **Email log (admin)**: every email sent, with success / failure, plus a "Check overdue now" button.
+The **Rohini Employee Management System** is a centralized platform that helps administrators manage employees and coordinate daily organizational activities.
 
-### Who can do what
+The application provides separate access for administrators and employees, with features for managing tasks, monitoring attendance, and maintaining employee information.
 
-| Action | Admin | Employee |
-| --- | --- | --- |
-| Add / edit / disable employees | yes | no |
-| See all tasks and the dashboard | yes | yes |
-| Assign a task to anyone | yes | yes |
-| Edit / delete a task | any task | only tasks they assigned |
-| Change a task's status | any task | tasks assigned to them or by them |
+## Features
 
-(To make assigning admin-only, change `create_task` in `backend/routes.py` to use `@admin_required`.)
+### Employee Management
+- Centralized employee information management
+- Employee and administrator accounts
+- Role-based access
 
-## Setup
+### Task Management
+- Assign tasks to employees
+- Set task priorities and deadlines
+- Track task status
+- View tasks in list and calendar views
+- Upload and download task attachments
 
-You need **Python 3.10+** and **Node 18+**.
+### Attendance Management
+- Employee check-in and check-out
+- Face-based attendance verification
+- GPS-based location verification
+- Office geofence configuration
+- Attendance records for administrators
 
-### 1. Backend (Flask), runs on http://localhost:5000
+### Dashboard and Team Coordination
+- Centralized management interface
+- Employee task visibility
+- Attendance monitoring
+- Team-wide task overview
+
+## Technology Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | React.js |
+| Build Tool | Vite |
+| Backend | Python, Flask |
+| Database | SQLite (current local setup) |
+| ORM | SQLAlchemy |
+| Authentication | JWT |
+| API | REST API |
+| Containerization | Docker (where configured) |
+| Version Control | Git and GitHub |
+
+## Project Structure
+
+```text
+rohini-team-manager/
+│
+├── backend/
+│   ├── app.py
+│   ├── models.py
+│   ├── routes.py
+│   ├── attendance_routes.py
+│   ├── requirements.txt
+│   └── uploads/
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   └── api.js
+│   ├── package.json
+│   └── vite.config.js
+│
+├── .gitignore
+└── README.md
+```
+
+*The structure above is representative. Update it if your local project has additional files or folders.*
+
+## Getting Started
+
+Follow these steps to run the application locally.
+
+### Prerequisites
+
+Install the following:
+
+- Python 3.10 or later
+- Node.js and npm
+- Git
+
+Docker is optional if your project has a configured Docker setup.
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Rahulkhaire/Rohini-Employee-Management-System.git
+cd Rohini-Employee-Management-System
+```
+
+### 2. Backend Setup
+
+Open a terminal:
 
 ```bash
 cd backend
-python -m venv venv
-source venv/bin/activate          # Windows: venv\Scripts\activate
+python3 -m venv venv
+```
+
+Activate the virtual environment.
+
+**macOS/Linux:**
+
+```bash
+source venv/bin/activate
+```
+
+**Windows:**
+
+```bash
+venv\Scripts\activate
+```
+
+Install dependencies:
+
+```bash
 pip install -r requirements.txt
-cp .env.example .env              # Windows: copy .env.example .env   (then edit it)
+```
+
+Configure the environment variables required by your backend in a `.env` file. Do not commit secrets or production credentials.
+
+### 3. Start the Backend
+
+From the backend directory, run:
+
+```bash
 python app.py
 ```
 
-On the first start it creates the database and the first admin:
+The backend is expected to run at:
 
-- Email: `admin@rohini.com`
-- Password: `Admin@123`  **(change it after first login, or set ADMIN_EMAIL / ADMIN_PASSWORD in `.env` before the first run)**
+```text
+http://localhost:5000
+```
 
-### 2. Frontend (React), runs on http://localhost:5173
+### 4. Frontend Setup
+
+Open another terminal:
 
 ```bash
 cd frontend
 npm install
+```
+
+Start the development server:
+
+```bash
 npm run dev
 ```
 
-Open http://localhost:5173 and log in. Go to **Team** to add your 5-6 employees.
+Open the application in your browser:
 
-## Email setup (important for overdue reminders)
-
-Edit `backend/.env`:
-
-```
-MAIL_SERVER=smtp.gmail.com
-MAIL_PORT=587
-MAIL_USE_TLS=true
-MAIL_USERNAME=yourcompany@gmail.com
-MAIL_PASSWORD=your-16-char-app-password
+```text
+http://localhost:5173
 ```
 
-- Gmail: turn on 2-step verification, then create an **App Password** (Google Account -> Security) and use that.
-- Google Workspace / Zoho / Outlook work the same way with their SMTP host and port.
-- If `MAIL_SERVER` is empty, nothing is sent; emails are printed in the console and shown in **Email log** as "SMTP off". This is handy for testing.
-- Test it: create a task with a deadline 1-2 minutes ahead, wait, then open **Email log -> Check overdue now**
-  (otherwise the server checks automatically every `REMINDER_CHECK_MINUTES`, default 15).
+## Database
 
-Other settings in `.env`: `OVERDUE_REPEAT_HOURS` (0 = only one reminder), `CC_ASSIGNER_ON_OVERDUE`, `NOTIFY_ON_ASSIGN`.
+The current local development setup uses SQLite.
 
-## Project layout
+The database is stored locally and is not included in the GitHub repository.
 
-```
-backend/   app.py (start here) · models.py · routes.py (API) · mailer.py · reminders.py (scheduler)
-frontend/  src/pages (Login, Dashboard, Tasks, Team, EmailLog, Profile) · src/components · src/styles.css
-```
+For production deployment, configure a production database and migrate the existing data before switching over.
 
-Colours and logo come from the company profile: teal `#255B7B`, orange `#EE8443`, green `#0A7A3C`
-(logo files are in `frontend/public/`).
+## Security Notes
 
-## Going live (later)
+- Never upload `.env` files or secret keys.
+- Do not commit employee personal information or attendance photos.
+- Protect administrative accounts with strong passwords.
+- Use HTTPS in production.
+- Configure appropriate permissions for employee records and uploaded attachments.
 
-- Build the frontend: `cd frontend && npm run build` (output in `frontend/dist`), serve it with Nginx or any static host.
-- Run the API with `gunicorn -w 1 -b 0.0.0.0:5000 "app:create_app()"`.
-  **Keep 1 worker** (or move the reminder job to a cron), otherwise each worker would send reminders.
-- Set strong `SECRET_KEY` / `JWT_SECRET_KEY`, `FRONTEND_ORIGIN` and `APP_URL` to your real domain, and use HTTPS.
-- For more than ~20 users switch `DATABASE_URL` to PostgreSQL (`pip install psycopg2-binary`).
-- If the API is on a different domain than the frontend, set `VITE_API_URL` in `frontend/.env` before building.
+## Future Improvements
 
-## API quick reference
+- Production database integration
+- Cloud-based file storage
+- Improved analytics and reporting
+- Automated notifications
+- Enhanced attendance reporting
+- Production deployment and monitoring
 
-`POST /api/auth/login` · `GET /api/auth/me` · `GET|POST /api/users` · `PUT /api/users/:id` ·
-`GET|POST /api/tasks` · `PUT|DELETE /api/tasks/:id` · `PATCH /api/tasks/:id/status` ·
-`GET /api/dashboard` · `GET /api/emails` · `POST /api/reminders/run`
->>>>>>> 01a4ce9 (Initial commit)
+## Author
+
+**Rahul Khaire**
+
+GitHub: [@Rahulkhaire](https://github.com/Rahulkhaire)
+
+## Repository
+
+[ Rohini Employee Management System](https://github.com/Rahulkhaire/Rohini-Employee-Management-System)
+
+---
+
+*Developed to improve employee management, attendance tracking, and team coordination at Rohini.*
